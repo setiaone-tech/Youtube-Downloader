@@ -23,7 +23,7 @@ def send_search(message):
     bagi = pesan.split(" ",1)
     search = bagi[1]
     judul = ""
-    url = requests.get("https://mhankbarbars.herokuapp.com/api/ytsearch?q="+search+"&apiKey=UDgpiw7xqsL8dHhpctec").json()
+    url = requests.get("https://mhankbarbars.herokuapp.com/api/ytsearch?q="+search+"&apiKey=API-KEY").json()
     num = 0
     markup = telebot.types.InlineKeyboardMarkup()
     if url['status'] == 200:
@@ -38,7 +38,7 @@ def send_search(message):
 @bot.callback_query_handler(func=lambda call: True)
 def handler(call):
     cari = call.data
-    url = requests.get('https://mhankbarbars.herokuapp.com/api/ytv?url='+cari+'&apiKey=UDgpiw7xqsL8dHhpctec').json()
+    url = requests.get('https://mhankbarbars.herokuapp.com/api/ytv?url='+cari+'&apiKey=API-KEY').json()
     bot.send_message(call.from_user.id, "Permintaan anda sedang di proses...")
     if url['status'] == 200:
         bot.send_video(call.from_user.id, url['result'])
