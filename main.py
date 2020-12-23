@@ -4,19 +4,23 @@ import telebot
 from pythonping import ping
 import wget
 import urllib
+import datetime
 
-api = "API-KEY"
+api = "TELEGRAM API-KEY"
 bot = telebot.TeleBot(api,threaded=False)
-headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Connection": "keep-alive",
-        "Authorization": "Bearer Your Api-Key"
-    }
+def log(message, perintah):
+    nama_awal = message.chat.first_name
+    nama_akhir = message.chat.last_name
+    ttd = datetime.datetime.now().strftime('%d-%B-%Y')
+    text_log = '{}, {} {}, {}\n'.format(ttd, nama_awal, nama_akhir, perintah)
+    log_bot = open('log_bot.txt', 'a')
+    log_bot.write(text_log)
+    log_bot.close()
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-	bot.reply_to(message, "Selamat datang di BOT Youtube Downloader")
+    log(message, 'start')
+    bot.reply_to(message, "Selamat datang di BOT Youtube Downloader")
     
 @bot.message_handler(commands=['help'])
 def send_help(message):
@@ -27,6 +31,7 @@ def send_help(message):
     
 @bot.message_handler(commands=['search'])
 def send_search(message):
+    log(message, message.text)
     chat_id = message.chat.id
     pesan = message.text
     bagi = pesan.split(" ",1)
@@ -77,7 +82,7 @@ def handler(call):
         "Accept": "application/json",
         "Content-Type": "application/json",
         "Connection": "keep-alive",
-        "Authorization": "Bearer Your Api-Key"
+        "Authorization": "Bearer Api-Key"
         }
         data = {
         "url" : search
@@ -103,7 +108,7 @@ def handler(call):
             else:
                 bot.send_message(call.from_user.id, "Ukuran file lebih dari 20mb!")
         else:
-            bot.send_message(call.from_user.id, url['error'])
+            bot.send_message(call.from_user.id, url['message'])
         
 @bot.message_handler(commands=['about'])
 def send_about(message):
