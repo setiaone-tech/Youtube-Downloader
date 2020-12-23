@@ -1,9 +1,18 @@
 import requests
 import json
 import telebot
+from pythonping import ping
+import wget
+import urllib
 
-api = "Api-Key"
+api = "API-KEY"
 bot = telebot.TeleBot(api,threaded=False)
+headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Connection": "keep-alive",
+        "Authorization": "Bearer Your Api-Key"
+    }
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
@@ -23,25 +32,37 @@ def send_search(message):
     bagi = pesan.split(" ",1)
     search = bagi[1]
     judul = ""
-    url = requests.get("https://mhankbarbars.herokuapp.com/api/ytsearch?q="+search+"&apiKey=API-KEY").json()
+    url = requests.get("https://mhankbarbars.herokuapp.com/api/ytsearch?q="+search+"&apiKey=api-key").json()
     num = 0
     markup = telebot.types.InlineKeyboardMarkup()
     if url['status'] == 200:
         for i in range(10):
             num += 1
             judul += str(num)+"."+str(url['result'][i]['title'])+" "+str(url['result'][i]['duration'])+"\n"
-        id1 = telebot.types.InlineKeyboardButton(text="1", callback_data=url['result'][0]['link'])
-        id2 = telebot.types.InlineKeyboardButton(text="2", callback_data=url['result'][1]['link'])
-        id3 = telebot.types.InlineKeyboardButton(text="3", callback_data=url['result'][2]['link'])
-        id4 = telebot.types.InlineKeyboardButton(text="4", callback_data=url['result'][3]['link'])
-        id5 = telebot.types.InlineKeyboardButton(text="5", callback_data=url['result'][4]['link'])
-        id6 = telebot.types.InlineKeyboardButton(text="6", callback_data=url['result'][5]['link'])
-        id7 = telebot.types.InlineKeyboardButton(text="7", callback_data=url['result'][6]['link'])
-        id8 = telebot.types.InlineKeyboardButton(text="8", callback_data=url['result'][7]['link'])
-        id9 = telebot.types.InlineKeyboardButton(text="9", callback_data=url['result'][8]['link'])
-        id10 = telebot.types.InlineKeyboardButton(text="10", callback_data=url['result'][9]['link'])
+        id1 = telebot.types.InlineKeyboardButton(text="1🎬", callback_data="/m4 "+url['result'][0]['link'])
+        id2 = telebot.types.InlineKeyboardButton(text="2🎬", callback_data="/m4 "+url['result'][1]['link'])
+        id3 = telebot.types.InlineKeyboardButton(text="3🎬", callback_data="/m4 "+url['result'][2]['link'])
+        id4 = telebot.types.InlineKeyboardButton(text="4🎬", callback_data="/m4 "+url['result'][3]['link'])
+        id5 = telebot.types.InlineKeyboardButton(text="5🎬", callback_data="/m4 "+url['result'][4]['link'])
+        id6 = telebot.types.InlineKeyboardButton(text="6🎬", callback_data="/m4 "+url['result'][5]['link'])
+        id7 = telebot.types.InlineKeyboardButton(text="7🎬", callback_data="/m4 "+url['result'][6]['link'])
+        id8 = telebot.types.InlineKeyboardButton(text="8🎬", callback_data="/m4 "+url['result'][7]['link'])
+        id9 = telebot.types.InlineKeyboardButton(text="9🎬", callback_data="/m4 "+url['result'][8]['link'])
+        id10 = telebot.types.InlineKeyboardButton(text="10🎬", callback_data="/m4 "+url['result'][9]['link'])
+        id11 = telebot.types.InlineKeyboardButton(text="1🎧", callback_data="/m3 "+url['result'][0]['link'])
+        id12 = telebot.types.InlineKeyboardButton(text="2🎧", callback_data="/m3 "+url['result'][1]['link'])
+        id13 = telebot.types.InlineKeyboardButton(text="3🎧", callback_data="/m3 "+url['result'][2]['link'])
+        id14 = telebot.types.InlineKeyboardButton(text="4🎧", callback_data="/m3 "+url['result'][3]['link'])
+        id15 = telebot.types.InlineKeyboardButton(text="5🎧", callback_data="/m3 "+url['result'][4]['link'])
+        id16 = telebot.types.InlineKeyboardButton(text="6🎧", callback_data="/m3 "+url['result'][5]['link'])
+        id17 = telebot.types.InlineKeyboardButton(text="7🎧", callback_data="/m3 "+url['result'][6]['link'])
+        id18 = telebot.types.InlineKeyboardButton(text="8🎧", callback_data="/m3 "+url['result'][7]['link'])
+        id19 = telebot.types.InlineKeyboardButton(text="9🎧", callback_data="/m3 "+url['result'][8]['link'])
+        id20 = telebot.types.InlineKeyboardButton(text="10🎧", callback_data="/m3 "+url['result'][9]['link'])
         markup.row(id1,id2,id3,id4,id5)
         markup.row(id6,id7,id8,id9,id10)
+        markup.row(id11,id12,id13,id14,id15)
+        markup.row(id16,id17,id18,id19,id20)
         bot.send_message(chat_id, text=judul, reply_markup = markup)
     else:
         bot.send_message(chat_id, url['error'])
@@ -49,20 +70,53 @@ def send_search(message):
 @bot.callback_query_handler(func=lambda call: True)
 def handler(call):
     cari = call.data
-    url = requests.get('https://mhankbarbars.herokuapp.com/api/ytv?url='+cari+'&apiKey=API-KEY').json()
-    bot.send_message(call.from_user.id, "Permintaan anda sedang di proses...")
-    if url['status'] == 200:
-        bot.send_video(call.from_user.id, url['result'], caption = "title : "+str(url['title'])+"\nFileSize : "+str(url['filesize']))
+    bagi = cari.split(" ",1)
+    search = bagi[1]
+    if bagi[0] == "/m4":
+        headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Connection": "keep-alive",
+        "Authorization": "Bearer Your Api-Key"
+        }
+        data = {
+        "url" : search
+        }
+        url = requests.get("https://afara.my.id/api/v3/get-youtube-video-link", data=json.dumps(data), headers=headers).json()
+        bot.send_message(call.from_user.id, "Permintaan anda sedang di proses...")
+        if url['status'] == 'success':
+            bot.send_video(call.from_user.id, url['data']['urls'][0]['url'])
+        else:
+            bot.send_message(call.from_user.id, url['error'])
     else:
-        bot.send_message(call.from_user.id, url['error'])
+        url = requests.get('https://mhankbarbars.herokuapp.com/api/yta?url='+search+'&apiKey=api-key').json()
+        if url['status'] == 200:
+            bagi = url['filesize'].split(" ")
+            ukuran = bagi[0]
+            if float(ukuran) < 20:
+                bot.send_message(call.from_user.id, "Mohon tunggu sebentar... sedang mendownload lagu sebesar "+url['filesize']+" mb")
+                target = url['result']
+                r = requests.get(target)
+                open(url['title']+'.MP3', 'wb').write(r.content)
+                lagu = open(url['title']+".MP3", "rb")
+                bot.send_audio(call.from_user.id, lagu)
+            else:
+                bot.send_message(call.from_user.id, "Ukuran file lebih dari 20mb!")
+        else:
+            bot.send_message(call.from_user.id, url['error'])
         
 @bot.message_handler(commands=['about'])
 def send_about(message):
         chat_id = message.chat.id
         bot.send_message(chat_id, "BOT ini dibuat menggunakan bahasa pemrogram Python.\nBOT ini dibuat dikala kegabutan melanda.\n\nAuthor : Tia\nSpecial Thanks : pyTelegramBotAPI Indonesia")
 
+@bot.message_handler(commands=['cek'])
+def send_cek(message):
+        chat_id = message.chat.id
+        hasil = ping('mhankbarbars.herokuapp.com')
+        bot.send_message(chat_id, hasil)
 while True:
-  try:
-    bot.polling()
-  except:
-    bot.stop_polling()
+      try:           
+         bot.polling(none_stop = True, interval = 10, timeout = 60)
+      except:
+         bot.stop_polling()
